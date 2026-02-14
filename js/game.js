@@ -28,9 +28,14 @@ class Game {
         this.obstacleSpawnTimer = 0;
 
         // 障害物生成間隔（ランダム範囲）
-        this.minSpawnInterval = 70;  // 最小間隔（フレーム数）
-        this.maxSpawnInterval = 130; // 最大間隔（フレーム数）
+        this.minSpawnInterval = 80;  // 最小間隔（フレーム数）
+        this.maxSpawnInterval = 140; // 最大間隔（フレーム数）
         this.obstacleSpawnInterval = this.getRandomSpawnInterval();
+
+        // 2連続パターン用
+        this.isDoublePattern = false; // 2連続パターンフラグ
+        this.doublePatternChance = 0.25; // 25%の確率で2連続
+        this.doubleSpawnInterval = 35; // 2連続時の間隔（短い）
 
         // フレームカウント
         this.frameCount = 0;
@@ -162,6 +167,8 @@ class Game {
         this.frameCount = 0;
         this.jumpKeyPressed = false;
         this.jumpKeyPressTime = 0;
+        this.isDoublePattern = false;
+        this.doublePatternChance = 0.25;
         this.updateScoreDisplay();
     }
 
@@ -227,14 +234,17 @@ class Game {
 
         // 難易度に応じて障害物の生成間隔の範囲を狭める
         if (score > 1000) {
-            this.minSpawnInterval = 50;
-            this.maxSpawnInterval = 90;
-        } else if (score > 500) {
             this.minSpawnInterval = 60;
-            this.maxSpawnInterval = 110;
-        } else if (score > 200) {
-            this.minSpawnInterval = 65;
+            this.maxSpawnInterval = 100;
+            this.doublePatternChance = 0.35; // 難易度が上がると2連続が増える
+        } else if (score > 500) {
+            this.minSpawnInterval = 70;
             this.maxSpawnInterval = 120;
+            this.doublePatternChance = 0.30;
+        } else if (score > 200) {
+            this.minSpawnInterval = 75;
+            this.maxSpawnInterval = 130;
+            this.doublePatternChance = 0.25;
         }
     }
 
@@ -253,8 +263,20 @@ class Game {
         const obstacle = new Obstacle(this.canvas.width, y, this, laneType);
         this.obstacles.push(obstacle);
 
-        // 次の障害物生成までの間隔をランダムに設定
-        this.obstacleSpawnInterval = this.getRandomSpawnInterval();
+        // 次の障害物生成までの間隔を設定
+        if (this.isDoublePattern) {
+            // 2連続パターンの2つ目を生成した場合、通常間隔に戻す
+            this.obstacleSpawnInterval = this.getRandomSpawnInterval();
+            this.isDoublePattern = false;
+        } else {
+            // 一定確率で2連続パターンを開始
+            if (Math.random() < this.doublePatternChance) {
+                this.obstacleSpawnInterval = this.doubleSpawnInterval;
+                this.isDoublePattern = true;
+            } else {
+                this.obstacleSpawnInterval = this.getRandomSpawnInterval();
+            }
+        }
     }
 
     draw() {
