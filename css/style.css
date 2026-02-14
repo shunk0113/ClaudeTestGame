@@ -299,6 +299,17 @@ body {
     box-shadow: 0 10px 30px rgba(138, 180, 248, 0.3);
 }
 
+.game-thumbnail {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    height: 150px;
+    margin: 0 auto 20px;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 .game-card h2 {
     color: #8ab4f8;
     margin-bottom: 15px;
