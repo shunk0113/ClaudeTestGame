@@ -37,6 +37,7 @@ class Game {
         this.isDoublePattern = false; // 2連続パターンフラグ
         this.doublePatternChance = 0.25; // 25%の確率で2連続
         this.doubleSpawnInterval = 12; // 2連続時の間隔（ギリギリまで詰める）
+        this.doubleLaneType = null; // 2連続パターンの1つ目のレーンタイプ
 
         // フレームカウント
         this.frameCount = 0;
@@ -223,6 +224,7 @@ class Game {
         this.jumpKeyPressTime = 0;
         this.isDoublePattern = false;
         this.doublePatternChance = 0.25;
+        this.doubleLaneType = null;
         this.updateScoreDisplay();
     }
 
@@ -303,8 +305,15 @@ class Game {
     }
 
     spawnObstacle() {
-        // ランダムで地面または空中レーンを選択
-        const laneType = Math.random() < 0.5 ? LaneType.GROUND : LaneType.AIR;
+        // レーンタイプの決定
+        let laneType;
+        if (this.isDoublePattern && this.doubleLaneType !== null) {
+            // 2連続パターンの2つ目は1つ目と同じレーンを使用
+            laneType = this.doubleLaneType;
+        } else {
+            // ランダムで地面または空中レーンを選択
+            laneType = Math.random() < 0.5 ? LaneType.GROUND : LaneType.AIR;
+        }
 
         // レーンに応じてy座標を設定
         let y;
@@ -322,11 +331,13 @@ class Game {
             // 2連続パターンの2つ目を生成した場合、通常間隔に戻す
             this.obstacleSpawnInterval = this.getRandomSpawnInterval();
             this.isDoublePattern = false;
+            this.doubleLaneType = null; // リセット
         } else {
             // 一定確率で2連続パターンを開始
             if (Math.random() < this.doublePatternChance) {
                 this.obstacleSpawnInterval = this.doubleSpawnInterval;
                 this.isDoublePattern = true;
+                this.doubleLaneType = laneType; // 1つ目のレーンタイプを保存
             } else {
                 this.obstacleSpawnInterval = this.getRandomSpawnInterval();
             }
