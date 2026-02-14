@@ -90,27 +90,48 @@ class Ball {
     }
 
     checkBrickCollision(brick) {
-        // ブロックとの衝突判定（簡易版）
+        // ブロックとの衝突判定（円と矩形の正確な判定）
         const brickBounds = brick.getBounds();
 
-        // ボールの中心がブロック内にあるか
-        if (this.x >= brickBounds.x &&
-            this.x <= brickBounds.x + brickBounds.width &&
-            this.y >= brickBounds.y &&
-            this.y <= brickBounds.y + brickBounds.height) {
+        // ボールの中心から最も近いブロックの点を見つける
+        const closestX = Math.max(brickBounds.x, Math.min(this.x, brickBounds.x + brickBounds.width));
+        const closestY = Math.max(brickBounds.y, Math.min(this.y, brickBounds.y + brickBounds.height));
 
+        // ボールの中心と最も近い点の距離を計算
+        const distanceX = this.x - closestX;
+        const distanceY = this.y - closestY;
+        const distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+
+        // 距離がボールの半径以下なら衝突
+        if (distanceSquared <= (this.radius * this.radius)) {
             // 衝突した方向を判定
-            const fromLeft = Math.abs(this.x - brickBounds.x);
-            const fromRight = Math.abs(this.x - (brickBounds.x + brickBounds.width));
-            const fromTop = Math.abs(this.y - brickBounds.y);
-            const fromBottom = Math.abs(this.y - (brickBounds.y + brickBounds.height));
+            // ボールがブロックの上下左右のどの辺に最も近いか判定
+            const left = Math.abs(this.x - brickBounds.x);
+            const right = Math.abs(this.x - (brickBounds.x + brickBounds.width));
+            const top = Math.abs(this.y - brickBounds.y);
+            const bottom = Math.abs(this.y - (brickBounds.y + brickBounds.height));
 
-            const minDist = Math.min(fromLeft, fromRight, fromTop, fromBottom);
+            const minDist = Math.min(left, right, top, bottom);
 
-            if (minDist === fromTop || minDist === fromBottom) {
+            // 最も近い辺に応じて反射方向を決定
+            if (minDist === top || minDist === bottom) {
+                // 上下の辺に衝突
                 this.speedY = -this.speedY;
+                // ボールがブロックに埋まらないように位置調整
+                if (minDist === top) {
+                    this.y = brickBounds.y - this.radius;
+                } else {
+                    this.y = brickBounds.y + brickBounds.height + this.radius;
+                }
             } else {
+                // 左右の辺に衝突
                 this.speedX = -this.speedX;
+                // ボールがブロックに埋まらないように位置調整
+                if (minDist === left) {
+                    this.x = brickBounds.x - this.radius;
+                } else {
+                    this.x = brickBounds.x + brickBounds.width + this.radius;
+                }
             }
 
             return true;
