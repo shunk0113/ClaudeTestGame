@@ -349,6 +349,8 @@ class RunnerGame {
         this.state = RunnerGameState.GAME_OVER;
         this.audioManager.playGameOver();
 
+        console.log('Game Over triggered'); // デバッグ用
+
         // ハイスコアの保存
         const isNewHighScore = this.scoreManager.saveHighScore();
 
@@ -357,6 +359,9 @@ class RunnerGame {
         const finalScoreElement = document.getElementById('final-score');
         if (finalScoreElement) {
             finalScoreElement.textContent = finalScore;
+            console.log('Final score set:', finalScore); // デバッグ用
+        } else {
+            console.error('final-score element not found'); // デバッグ用
         }
 
         const highScoreMessage = document.getElementById('high-score-message');
@@ -373,7 +378,11 @@ class RunnerGame {
 
         // ゲームオーバー画面を表示
         if (this.gameOverScreen) {
+            console.log('Removing hidden class from game over screen'); // デバッグ用
             this.gameOverScreen.classList.remove('hidden');
+            console.log('Game over screen classes:', this.gameOverScreen.className); // デバッグ用
+        } else {
+            console.error('gameOverScreen element not found'); // デバッグ用
         }
 
         // GameManagerに通知
