@@ -36,7 +36,7 @@ class Game {
         // 2連続パターン用
         this.isDoublePattern = false; // 2連続パターンフラグ
         this.doublePatternChance = 0.25; // 25%の確率で2連続
-        this.doubleSpawnInterval = 35; // 2連続時の間隔（短い）
+        this.doubleSpawnInterval = 12; // 2連続時の間隔（ギリギリまで詰める）
 
         // フレームカウント
         this.frameCount = 0;
