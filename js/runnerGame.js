@@ -13,7 +13,7 @@ class RunnerGame {
         this.ctx = this.canvas.getContext('2d');
         this.audioManager = audioManager;
         this.gameManager = gameManager;
-        this.state = RunnerRunnerGameState.START;
+        this.state = RunnerGameState.START;
 
         // Canvas サイズの設定
         this.setCanvasSize();
@@ -54,6 +54,7 @@ class RunnerGame {
         this.gameOverScreen = document.getElementById('game-over-screen');
         this.soundToggle = document.getElementById('sound-toggle');
 
+        // 初期化
         this.init();
     }
 
