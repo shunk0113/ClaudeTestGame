@@ -165,7 +165,9 @@ class RunnerGame {
     }
 
     restart() {
-        this.gameOverScreen.classList.add('hidden');
+        if (this.gameOverScreen) {
+            this.gameOverScreen.classList.add('hidden');
+        }
         this.reset();
         this.state = RunnerGameState.PLAYING;
         this.gameLoop();
