@@ -1,16 +1,19 @@
-// ゲーム状態
-const GameState = {
+// ランナーゲーム状態
+const RunnerGameState = {
     START: 'START',
     PLAYING: 'PLAYING',
+    PAUSED: 'PAUSED',
     GAME_OVER: 'GAME_OVER'
 };
 
-// ゲームクラス
-class Game {
-    constructor() {
-        this.canvas = document.getElementById('gameCanvas');
+// ランナーゲームクラス
+class RunnerGame {
+    constructor(canvas, audioManager, gameManager) {
+        this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.state = GameState.START;
+        this.audioManager = audioManager;
+        this.gameManager = gameManager;
+        this.state = RunnerRunnerGameState.START;
 
         // Canvas サイズの設定
         this.setCanvasSize();
@@ -65,7 +68,6 @@ class Game {
         // ゲーム要素の初期化
         this.player = new Player(100, this.canvas.height - 150, this);
         this.scoreManager = new ScoreManager();
-        this.audioManager = new AudioManager();
 
         // イベントリスナーの設定
         this.setupEventListeners();
@@ -77,10 +79,14 @@ class Game {
 
     setupEventListeners() {
         // スタートボタン
-        this.startBtn.addEventListener('click', () => this.start());
+        if (this.startBtn) {
+            this.startBtn.addEventListener('click', () => this.start());
+        }
 
         // リスタートボタン
-        this.restartBtn.addEventListener('click', () => this.restart());
+        if (this.restartBtn) {
+            this.restartBtn.addEventListener('click', () => this.restart());
+        }
 
         // キーボード操作（小ジャンプ・大ジャンプ対応）
         document.addEventListener('keydown', (e) => {
@@ -109,17 +115,19 @@ class Game {
         });
 
         // 音声トグル
-        this.soundToggle.addEventListener('click', () => {
-            this.audioManager.toggleMute();
-            this.soundToggle.textContent = this.audioManager.isMuted ? '🔇 音声OFF' : '🔊 音声ON';
-        });
+        if (this.soundToggle) {
+            this.soundToggle.addEventListener('click', () => {
+                this.audioManager.toggleMute();
+                this.soundToggle.textContent = this.audioManager.isMuted ? '🔇 音声OFF' : '🔊 音声ON';
+            });
+        }
 
         // ウィンドウリサイズ
         window.addEventListener('resize', () => this.setCanvasSize());
     }
 
     handleJumpStart() {
-        if (this.state === GameState.PLAYING) {
+        if (this.state === RunnerGameState.PLAYING) {
             // ジャンプキーが押された瞬間にジャンプを開始
             if (!this.jumpKeyPressed && !this.player.isJumping) {
                 this.jumpKeyPressed = true;
@@ -127,13 +135,13 @@ class Game {
                 this.player.jump();
                 this.audioManager.playJump();
             }
-        } else if (this.state === GameState.START) {
+        } else if (this.state === RunnerGameState.START) {
             this.start();
         }
     }
 
     handleJumpEnd() {
-        if (this.state === GameState.PLAYING && this.jumpKeyPressed) {
+        if (this.state === RunnerGameState.PLAYING && this.jumpKeyPressed) {
             // キーを離した時、押していた時間を計算
             const pressDuration = Date.now() - this.jumpKeyPressTime;
 
@@ -147,15 +155,30 @@ class Game {
     }
 
     start() {
-        this.state = GameState.PLAYING;
-        this.startBtn.style.display = 'none';
+        this.state = RunnerGameState.PLAYING;
+        if (this.startBtn) {
+            this.startBtn.style.display = 'none';
+        }
         this.reset();
         this.gameLoop();
     }
 
     restart() {
         this.gameOverScreen.classList.add('hidden');
-        this.start();
+        this.reset();
+        this.state = RunnerGameState.PLAYING;
+        this.gameLoop();
+    }
+
+    pause() {
+        this.state = RunnerGameState.PAUSED;
+    }
+
+    resume() {
+        if (this.state === RunnerGameState.PAUSED) {
+            this.state = RunnerGameState.PLAYING;
+            this.gameLoop();
+        }
     }
 
     reset() {
@@ -173,7 +196,7 @@ class Game {
     }
 
     gameLoop() {
-        if (this.state !== GameState.PLAYING) {
+        if (this.state !== RunnerGameState.PLAYING) {
             return;
         }
 
@@ -322,7 +345,7 @@ class Game {
     }
 
     gameOver() {
-        this.state = GameState.GAME_OVER;
+        this.state = RunnerGameState.GAME_OVER;
         this.audioManager.playGameOver();
 
         // ハイスコアの保存
@@ -343,6 +366,11 @@ class Game {
         this.setupTweetButton(finalScore, isNewHighScore);
 
         this.gameOverScreen.classList.remove('hidden');
+
+        // GameManagerに通知
+        if (this.gameManager) {
+            this.gameManager.onGameOver();
+        }
     }
 
     setupTweetButton(score, isNewHighScore) {
@@ -370,7 +398,3 @@ class Game {
     }
 }
 
-// ページ読み込み時にゲームを初期化
-window.addEventListener('DOMContentLoaded', () => {
-    const game = new Game();
-});

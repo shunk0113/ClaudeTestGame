@@ -22,9 +22,15 @@ body {
     max-width: 900px;
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    display: none; /* 初期状態で非表示 */
+}
+
+.game-container.active {
+    display: block;
 }
 
 .game-header {
+    position: relative;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -251,5 +257,166 @@ body {
 
     .score-item {
         font-size: 1em;
+    }
+}
+
+/* ゲームセレクト画面 */
+.game-select-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.select-container {
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+    padding: 30px;
+}
+
+.select-container h1 {
+    color: #e0e0e0;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    text-shadow: 0 2px 10px rgba(138, 180, 248, 0.3);
+}
+
+.game-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.game-card {
+    background: linear-gradient(145deg, #1e1e2f 0%, #2d2d44 100%);
+    border-radius: 15px;
+    padding: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: #8ab4f8;
+    box-shadow: 0 10px 30px rgba(138, 180, 248, 0.3);
+}
+
+.game-card h2 {
+    color: #8ab4f8;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.game-card p {
+    color: #b0b0b0;
+    font-size: 1em;
+}
+
+/* ポーズメニュー */
+.pause-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.pause-menu.hidden {
+    display: none;
+}
+
+.pause-content {
+    background: linear-gradient(145deg, #1e1e2f 0%, #2d2d44 100%);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.pause-content h2 {
+    color: #8ab4f8;
+    font-size: 2em;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 10px rgba(138, 180, 248, 0.3);
+}
+
+.pause-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ポーズボタン */
+.btn-pause {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.btn-pause:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-pause:active {
+    transform: translateY(1px);
+}
+
+/* モバイル対応 - セレクト画面とポーズメニュー */
+@media (max-width: 768px) {
+    .select-container h1 {
+        font-size: 2em;
+    }
+
+    .game-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .pause-content {
+        padding: 30px 20px;
+    }
+
+    .pause-content h2 {
+        font-size: 1.5em;
+    }
+
+    .btn-pause {
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 480px) {
+    .select-container h1 {
+        font-size: 1.5em;
+    }
+
+    .game-card h2 {
+        font-size: 1.2em;
+    }
+
+    .game-card p {
+        font-size: 0.9em;
     }
 }

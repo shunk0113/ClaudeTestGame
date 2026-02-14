@@ -7,9 +7,33 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="game-container">
+    <!-- ゲームセレクト画面 -->
+    <div id="game-select-screen" class="game-select-screen">
+        <div class="select-container">
+            <h1>ゲームセレクト</h1>
+            <div id="game-cards" class="game-cards">
+                <!-- ゲームカードが動的に生成される -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ポーズメニュー -->
+    <div id="pause-menu" class="pause-menu hidden">
+        <div class="pause-content">
+            <h2>一時停止</h2>
+            <div class="pause-actions">
+                <button id="resume-btn" class="btn-primary">ゲーム再開</button>
+                <button id="restart-from-pause-btn" class="btn-secondary">リスタート</button>
+                <button id="select-from-pause-btn" class="btn-secondary">セレクトに戻る</button>
+                <button id="sound-toggle-pause" class="btn-secondary">🔊 音声ON</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container" class="game-container">
         <div class="game-header">
-            <h1>エンドレスランゲーム</h1>
+            <h1 id="game-title">エンドレスランゲーム</h1>
+            <button id="pause-btn" class="btn-pause">⏸ ポーズ</button>
             <div class="score-board">
                 <div class="score-item">
                     <span class="label">スコア:</span>
@@ -36,6 +60,7 @@
                 <p class="high-score-message" id="high-score-message"></p>
                 <div class="game-over-actions">
                     <button id="restart-btn" class="btn-primary">もう一度プレイ</button>
+                    <button id="select-from-gameover-btn" class="btn-secondary">セレクトに戻る</button>
                     <button id="tweet-btn" class="btn-tweet">𝕏 スコアをツイート</button>
                 </div>
             </div>
@@ -51,6 +76,7 @@
     <script src="js/collision.js"></script>
     <script src="js/score.js"></script>
     <script src="js/audio.js"></script>
-    <script src="js/game.js"></script>
+    <script src="js/runnerGame.js"></script>
+    <script src="js/gameManager.js"></script>
 </body>
 </html>
