@@ -26,7 +26,11 @@ class Game {
         this.baseSpeed = 5;
         this.gravity = 0.6;
         this.obstacleSpawnTimer = 0;
-        this.obstacleSpawnInterval = 100; // フレーム数
+
+        // 障害物生成間隔（ランダム範囲）
+        this.minSpawnInterval = 70;  // 最小間隔（フレーム数）
+        this.maxSpawnInterval = 130; // 最大間隔（フレーム数）
+        this.obstacleSpawnInterval = this.getRandomSpawnInterval();
 
         // フレームカウント
         this.frameCount = 0;
@@ -174,22 +178,35 @@ class Game {
         this.updateDifficulty();
     }
 
+    getRandomSpawnInterval() {
+        // 最小値と最大値の間でランダムな間隔を生成
+        return Math.floor(Math.random() * (this.maxSpawnInterval - this.minSpawnInterval + 1)) + this.minSpawnInterval;
+    }
+
     updateDifficulty() {
         // スコアに応じてゲームスピードを上げる
         const score = Math.floor(this.scoreManager.currentScore);
         this.gameSpeed = this.baseSpeed + Math.floor(score / 200) * 0.5;
 
-        // 障害物の生成頻度を調整
-        if (score > 500 && this.obstacleSpawnInterval > 80) {
-            this.obstacleSpawnInterval = 80;
-        } else if (score > 1000 && this.obstacleSpawnInterval > 60) {
-            this.obstacleSpawnInterval = 60;
+        // 難易度に応じて障害物の生成間隔の範囲を狭める
+        if (score > 1000) {
+            this.minSpawnInterval = 50;
+            this.maxSpawnInterval = 90;
+        } else if (score > 500) {
+            this.minSpawnInterval = 60;
+            this.maxSpawnInterval = 110;
+        } else if (score > 200) {
+            this.minSpawnInterval = 65;
+            this.maxSpawnInterval = 120;
         }
     }
 
     spawnObstacle() {
         const obstacle = new Obstacle(this.canvas.width, this.canvas.height - 120, this);
         this.obstacles.push(obstacle);
+
+        // 次の障害物生成までの間隔をランダムに設定
+        this.obstacleSpawnInterval = this.getRandomSpawnInterval();
     }
 
     draw() {
