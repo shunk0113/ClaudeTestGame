@@ -61,8 +61,8 @@ class Game {
     setCanvasSize() {
         // Canvasの実際のサイズを設定（高DPI対応）
         const rect = this.canvas.getBoundingClientRect();
-        this.canvas.width = 800;
-        this.canvas.height = 400;
+        this.canvas.width = 1000;
+        this.canvas.height = 500;
     }
 
     init() {
