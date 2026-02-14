@@ -3,6 +3,8 @@
 window.addEventListener('DOMContentLoaded', () => {
     // エンドレスランゲームのサムネイル
     drawRunnerThumbnail();
+    // ブロック崩しのサムネイル
+    drawBreakoutThumbnail();
 });
 
 function drawRunnerThumbnail() {
@@ -116,6 +118,105 @@ function drawRunnerThumbnail() {
     ctx.beginPath();
     ctx.moveTo(0, groundY - 50);
     ctx.lineTo(width, groundY - 50);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function drawBreakoutThumbnail() {
+    const canvas = document.getElementById('breakout-thumbnail');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    // 背景
+    const gradient = ctx.createLinearGradient(0, 0, 0, height);
+    gradient.addColorStop(0, '#1a1a2e');
+    gradient.addColorStop(0.5, '#2d3561');
+    gradient.addColorStop(1, '#16213e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // ブロック
+    const brickWidth = 40;
+    const brickHeight = 12;
+    const padding = 2;
+    const offsetX = 30;
+    const offsetY = 20;
+    const cols = 5;
+    const rows = 3;
+
+    const colors = ['#e74c3c', '#f39c12', '#2ecc71'];
+
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+            const x = offsetX + col * (brickWidth + padding);
+            const y = offsetY + row * (brickHeight + padding);
+
+            // ブロック本体
+            ctx.fillStyle = colors[row];
+            ctx.fillRect(x, y, brickWidth, brickHeight);
+
+            // ハイライト
+            const brickGradient = ctx.createLinearGradient(x, y, x, y + brickHeight);
+            brickGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+            brickGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+            ctx.fillStyle = brickGradient;
+            ctx.fillRect(x, y, brickWidth, brickHeight / 2);
+
+            // 縁取り
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x, y, brickWidth, brickHeight);
+        }
+    }
+
+    // パドル
+    const paddleWidth = 50;
+    const paddleHeight = 8;
+    const paddleX = width / 2 - paddleWidth / 2;
+    const paddleY = height - 30;
+
+    ctx.fillStyle = '#4a90e2';
+    ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight);
+
+    // パドルのハイライト
+    const paddleGradient = ctx.createLinearGradient(paddleX, paddleY, paddleX, paddleY + paddleHeight);
+    paddleGradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+    paddleGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    ctx.fillStyle = paddleGradient;
+    ctx.fillRect(paddleX, paddleY, paddleWidth, paddleHeight / 2);
+
+    // ボール
+    const ballX = width / 2 + 20;
+    const ballY = height / 2 + 10;
+    const ballRadius = 5;
+
+    ctx.fillStyle = '#ff6b6b';
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ボールのハイライト
+    const ballGradient = ctx.createRadialGradient(
+        ballX - ballRadius / 3, ballY - ballRadius / 3, 0,
+        ballX, ballY, ballRadius
+    );
+    ballGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+    ballGradient.addColorStop(1, 'rgba(255, 107, 107, 0)');
+    ctx.fillStyle = ballGradient;
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ボールの軌跡（点線）
+    ctx.strokeStyle = 'rgba(255, 107, 107, 0.3)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(ballX, ballY);
+    ctx.lineTo(ballX - 30, ballY - 40);
     ctx.stroke();
     ctx.setLineDash([]);
 }

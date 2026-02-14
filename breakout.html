@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>ブロック崩し</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ポーズメニュー -->
+    <div id="pause-menu" class="pause-menu hidden">
+        <div class="pause-content">
+            <h2>一時停止</h2>
+            <div class="pause-actions">
+                <button id="resume-btn" class="btn-primary">ゲーム再開</button>
+                <button id="restart-from-pause-btn" class="btn-secondary">リスタート</button>
+                <button id="select-from-pause-btn" class="btn-secondary">セレクトに戻る</button>
+                <button id="sound-toggle-pause" class="btn-secondary">🔊 音声ON</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <button id="sound-toggle" class="btn-sound">🔊 音声ON</button>
+            <h1>ブロック崩し</h1>
+            <button id="pause-btn" class="btn-pause">⏸ ポーズ</button>
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">スコア:</span>
+                    <span id="current-score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">ハイスコア:</span>
+                    <span id="high-score">0</span>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="game-controls">
+            <button id="start-btn" class="btn-primary">スタート</button>
+        </div>
+
+        <div id="game-over-screen" class="game-over-screen hidden">
+            <div class="game-over-content">
+                <h2>ゲームオーバー!</h2>
+                <p class="final-score">スコア: <span id="final-score">0</span></p>
+                <p class="high-score-message" id="high-score-message"></p>
+                <div class="game-over-actions">
+                    <button id="restart-btn" class="btn-primary">もう一度プレイ</button>
+                    <button id="select-from-gameover-btn" class="btn-secondary">セレクトに戻る</button>
+                    <button id="tweet-btn" class="btn-tweet">𝕏 スコアをツイート</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <p>💡 <strong>操作:</strong> マウス移動 / 左右キー / タッチ操作でパドルを動かそう</p>
+        </div>
+    </div>
+
+    <script src="js/score.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/breakout-paddle.js"></script>
+    <script src="js/breakout-ball.js"></script>
+    <script src="js/breakout-brick.js"></script>
+    <script src="js/breakout-game.js"></script>
+</body>
+</html>
