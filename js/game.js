@@ -35,6 +35,11 @@ class Game {
         // フレームカウント
         this.frameCount = 0;
 
+        // ジャンプキーの状態
+        this.jumpKeyPressed = false;
+        this.jumpKeyPressTime = 0;
+        this.jumpThreshold = 150; // 150ms以上押すと大ジャンプ
+
         // UI要素
         this.startBtn = document.getElementById('start-btn');
         this.restartBtn = document.getElementById('restart-btn');
@@ -72,19 +77,30 @@ class Game {
         // リスタートボタン
         this.restartBtn.addEventListener('click', () => this.restart());
 
-        // キーボード操作
+        // キーボード操作（小ジャンプ・大ジャンプ対応）
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
-                this.handleJump();
+                this.handleJumpStart();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                this.handleJumpEnd();
             }
         });
 
         // タッチ/クリック操作
-        this.canvas.addEventListener('click', () => this.handleJump());
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            this.handleJump();
+            this.handleJumpStart();
+        });
+
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            this.handleJumpEnd();
         });
 
         // 音声トグル
@@ -97,12 +113,30 @@ class Game {
         window.addEventListener('resize', () => this.setCanvasSize());
     }
 
-    handleJump() {
+    handleJumpStart() {
         if (this.state === GameState.PLAYING) {
-            this.player.jump();
-            this.audioManager.playJump();
+            // ジャンプキーが押された時刻を記録
+            if (!this.jumpKeyPressed && !this.player.isJumping) {
+                this.jumpKeyPressed = true;
+                this.jumpKeyPressTime = Date.now();
+            }
         } else if (this.state === GameState.START) {
             this.start();
+        }
+    }
+
+    handleJumpEnd() {
+        if (this.state === GameState.PLAYING) {
+            // ジャンプキーが離された時、押していた時間を計算
+            if (this.jumpKeyPressed && !this.player.isJumping) {
+                const pressDuration = Date.now() - this.jumpKeyPressTime;
+                const isLargeJump = pressDuration >= this.jumpThreshold;
+
+                this.player.jump(isLargeJump);
+                this.audioManager.playJump();
+
+                this.jumpKeyPressed = false;
+            }
         }
     }
 
@@ -125,6 +159,8 @@ class Game {
         this.gameSpeed = this.baseSpeed;
         this.obstacleSpawnTimer = 0;
         this.frameCount = 0;
+        this.jumpKeyPressed = false;
+        this.jumpKeyPressTime = 0;
         this.updateScoreDisplay();
     }
 

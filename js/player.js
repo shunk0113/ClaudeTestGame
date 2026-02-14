@@ -9,7 +9,8 @@ class Player {
         // 物理演算用
         this.velocityY = 0;
         this.gravity = 0.6;
-        this.jumpPower = -12;
+        this.smallJumpPower = -9;   // 小ジャンプ
+        this.largeJumpPower = -13;  // 大ジャンプ
         this.isJumping = false;
 
         // 地面の位置
@@ -21,9 +22,10 @@ class Player {
         this.animationCounter = 0;
     }
 
-    jump() {
+    jump(isLargeJump = false) {
         if (!this.isJumping) {
-            this.velocityY = this.jumpPower;
+            // ジャンプの種類に応じてジャンプ力を設定
+            this.velocityY = isLargeJump ? this.largeJumpPower : this.smallJumpPower;
             this.isJumping = true;
         }
     }
