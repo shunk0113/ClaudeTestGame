@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>エンドレスランゲーム</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>エンドレスランゲーム</h1>
+            <div class="score-board">
+                <div class="score-item">
+                    <span class="label">スコア:</span>
+                    <span id="current-score">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">ハイスコア:</span>
+                    <span id="high-score">0</span>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="game-controls">
+            <button id="start-btn" class="btn-primary">スタート</button>
+            <button id="sound-toggle" class="btn-secondary">🔊 音声ON</button>
+        </div>
+
+        <div id="game-over-screen" class="game-over-screen hidden">
+            <div class="game-over-content">
+                <h2>ゲームオーバー!</h2>
+                <p class="final-score">スコア: <span id="final-score">0</span></p>
+                <p class="high-score-message" id="high-score-message"></p>
+                <button id="restart-btn" class="btn-primary">もう一度プレイ</button>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <p>💡 スペースキーまたはタップでジャンプ!</p>
+        </div>
+    </div>
+
+    <script src="js/player.js"></script>
+    <script src="js/obstacle.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/score.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
