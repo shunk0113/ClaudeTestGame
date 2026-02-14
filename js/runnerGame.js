@@ -354,19 +354,27 @@ class RunnerGame {
 
         // ゲームオーバー画面の表示
         const finalScore = Math.floor(this.scoreManager.currentScore);
-        document.getElementById('final-score').textContent = finalScore;
+        const finalScoreElement = document.getElementById('final-score');
+        if (finalScoreElement) {
+            finalScoreElement.textContent = finalScore;
+        }
 
         const highScoreMessage = document.getElementById('high-score-message');
-        if (isNewHighScore) {
-            highScoreMessage.textContent = '🎉 新記録達成！';
-        } else {
-            highScoreMessage.textContent = '';
+        if (highScoreMessage) {
+            if (isNewHighScore) {
+                highScoreMessage.textContent = '🎉 新記録達成！';
+            } else {
+                highScoreMessage.textContent = '';
+            }
         }
 
         // ツイートボタンのイベントリスナーを設定
         this.setupTweetButton(finalScore, isNewHighScore);
 
-        this.gameOverScreen.classList.remove('hidden');
+        // ゲームオーバー画面を表示
+        if (this.gameOverScreen) {
+            this.gameOverScreen.classList.remove('hidden');
+        }
 
         // GameManagerに通知
         if (this.gameManager) {
@@ -376,6 +384,7 @@ class RunnerGame {
 
     setupTweetButton(score, isNewHighScore) {
         const tweetBtn = document.getElementById('tweet-btn');
+        if (!tweetBtn) return;
 
         // 既存のイベントリスナーを削除（重複防止）
         const newTweetBtn = tweetBtn.cloneNode(true);

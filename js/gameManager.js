@@ -74,7 +74,9 @@ class GameManager {
 
         if (restartFromPauseBtn) {
             restartFromPauseBtn.addEventListener('click', () => {
-                this.resumeGame();
+                // ポーズメニューを非表示にしてからリスタート
+                this.pauseMenu.classList.add('hidden');
+                this.state = GameState.PLAYING;
                 this.restartGame();
             });
         }
