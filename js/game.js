@@ -115,10 +115,12 @@ class Game {
 
     handleJumpStart() {
         if (this.state === GameState.PLAYING) {
-            // ジャンプキーが押された時刻を記録
+            // ジャンプキーが押された瞬間にジャンプを開始
             if (!this.jumpKeyPressed && !this.player.isJumping) {
                 this.jumpKeyPressed = true;
                 this.jumpKeyPressTime = Date.now();
+                this.player.jump();
+                this.audioManager.playJump();
             }
         } else if (this.state === GameState.START) {
             this.start();
@@ -126,17 +128,16 @@ class Game {
     }
 
     handleJumpEnd() {
-        if (this.state === GameState.PLAYING) {
-            // ジャンプキーが離された時、押していた時間を計算
-            if (this.jumpKeyPressed && !this.player.isJumping) {
-                const pressDuration = Date.now() - this.jumpKeyPressTime;
-                const isLargeJump = pressDuration >= this.jumpThreshold;
+        if (this.state === GameState.PLAYING && this.jumpKeyPressed) {
+            // キーを離した時、押していた時間を計算
+            const pressDuration = Date.now() - this.jumpKeyPressTime;
 
-                this.player.jump(isLargeJump);
-                this.audioManager.playJump();
-
-                this.jumpKeyPressed = false;
+            // 短い時間（閾値未満）でキーを離した場合、上昇を打ち消す
+            if (pressDuration < this.jumpThreshold) {
+                this.player.cancelJump();
             }
+
+            this.jumpKeyPressed = false;
         }
     }
 

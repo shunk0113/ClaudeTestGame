@@ -22,11 +22,19 @@ class Player {
         this.animationCounter = 0;
     }
 
-    jump(isLargeJump = false) {
+    jump() {
         if (!this.isJumping) {
-            // ジャンプの種類に応じてジャンプ力を設定
-            this.velocityY = isLargeJump ? this.largeJumpPower : this.smallJumpPower;
+            // ジャンプ開始時は常に大ジャンプの力で開始
+            this.velocityY = this.largeJumpPower;
             this.isJumping = true;
+        }
+    }
+
+    cancelJump() {
+        // 上昇中にキーを離した場合、上昇を打ち消す
+        if (this.isJumping && this.velocityY < 0) {
+            // 上昇速度を減衰させる（小ジャンプ相当にする）
+            this.velocityY = this.velocityY * 0.3;
         }
     }
 
