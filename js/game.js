@@ -329,7 +329,8 @@ class Game {
         const isNewHighScore = this.scoreManager.saveHighScore();
 
         // ゲームオーバー画面の表示
-        document.getElementById('final-score').textContent = Math.floor(this.scoreManager.currentScore);
+        const finalScore = Math.floor(this.scoreManager.currentScore);
+        document.getElementById('final-score').textContent = finalScore;
 
         const highScoreMessage = document.getElementById('high-score-message');
         if (isNewHighScore) {
@@ -338,7 +339,34 @@ class Game {
             highScoreMessage.textContent = '';
         }
 
+        // ツイートボタンのイベントリスナーを設定
+        this.setupTweetButton(finalScore, isNewHighScore);
+
         this.gameOverScreen.classList.remove('hidden');
+    }
+
+    setupTweetButton(score, isNewHighScore) {
+        const tweetBtn = document.getElementById('tweet-btn');
+
+        // 既存のイベントリスナーを削除（重複防止）
+        const newTweetBtn = tweetBtn.cloneNode(true);
+        tweetBtn.parentNode.replaceChild(newTweetBtn, tweetBtn);
+
+        newTweetBtn.addEventListener('click', () => {
+            const gameUrl = 'https://shunk0113.github.io/ClaudeTestGame/';
+            const hashtags = 'エンドレスランゲーム,ブラウザゲーム';
+
+            let tweetText;
+            if (isNewHighScore) {
+                tweetText = `🎉 新記録達成！\nスコア: ${score}点\n\nエンドレスランゲームで遊んでみよう！`;
+            } else {
+                tweetText = `スコア: ${score}点\n\nエンドレスランゲームに挑戦中！`;
+            }
+
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(gameUrl)}&hashtags=${encodeURIComponent(hashtags)}`;
+
+            window.open(twitterUrl, '_blank', 'width=550,height=420');
+        });
     }
 }
 

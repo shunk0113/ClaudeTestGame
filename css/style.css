@@ -167,6 +167,36 @@ body {
     min-height: 30px;
 }
 
+.game-over-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.btn-tweet {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #1DA1F2;
+    color: white;
+    box-shadow: 0 4px 15px rgba(29, 161, 242, 0.3);
+}
+
+.btn-tweet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(29, 161, 242, 0.6);
+    background: #1a91da;
+}
+
+.btn-tweet:active {
+    transform: translateY(0);
+}
+
 .instructions {
     text-align: center;
     margin-top: 20px;
