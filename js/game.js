@@ -239,7 +239,18 @@ class Game {
     }
 
     spawnObstacle() {
-        const obstacle = new Obstacle(this.canvas.width, this.canvas.height - 120, this);
+        // ランダムで地面または空中レーンを選択
+        const laneType = Math.random() < 0.5 ? LaneType.GROUND : LaneType.AIR;
+
+        // レーンに応じてy座標を設定
+        let y;
+        if (laneType === LaneType.GROUND) {
+            y = this.canvas.height - 120; // 地面レーン
+        } else {
+            y = this.canvas.height - 220; // 空中レーン（地面より100px上）
+        }
+
+        const obstacle = new Obstacle(this.canvas.width, y, this, laneType);
         this.obstacles.push(obstacle);
 
         // 次の障害物生成までの間隔をランダムに設定

@@ -3,16 +3,25 @@ const ObstacleType = {
     CACTUS_SMALL: 'CACTUS_SMALL',
     CACTUS_LARGE: 'CACTUS_LARGE',
     ROCK: 'ROCK',
-    SPIKE: 'SPIKE'
+    SPIKE: 'SPIKE',
+    FLYING_BIRD: 'FLYING_BIRD',  // 空中障害物
+    FLYING_BAT: 'FLYING_BAT'     // 空中障害物
+};
+
+// レーンタイプ
+const LaneType = {
+    GROUND: 'GROUND',  // 地面レーン
+    AIR: 'AIR'         // 空中レーン
 };
 
 class Obstacle {
-    constructor(x, y, game) {
+    constructor(x, y, game, laneType = LaneType.GROUND) {
         this.game = game;
         this.x = x;
         this.y = y;
+        this.laneType = laneType;
 
-        // ランダムで障害物のタイプを決定
+        // レーンに応じて障害物のタイプを決定
         this.type = this.getRandomType();
 
         // タイプに応じてサイズを設定
@@ -23,7 +32,15 @@ class Obstacle {
     }
 
     getRandomType() {
-        const types = Object.values(ObstacleType);
+        // レーンに応じて障害物タイプを選択
+        let types;
+        if (this.laneType === LaneType.AIR) {
+            // 空中レーンの障害物
+            types = [ObstacleType.FLYING_BIRD, ObstacleType.FLYING_BAT];
+        } else {
+            // 地面レーンの障害物
+            types = [ObstacleType.CACTUS_SMALL, ObstacleType.CACTUS_LARGE, ObstacleType.ROCK, ObstacleType.SPIKE];
+        }
         return types[Math.floor(Math.random() * types.length)];
     }
 
@@ -45,6 +62,14 @@ class Obstacle {
                 this.width = 30;
                 this.height = 45;
                 break;
+            case ObstacleType.FLYING_BIRD:
+                this.width = 40;
+                this.height = 30;
+                break;
+            case ObstacleType.FLYING_BAT:
+                this.width = 35;
+                this.height = 25;
+                break;
         }
     }
 
@@ -57,6 +82,10 @@ class Obstacle {
                 return '#808080';
             case ObstacleType.SPIKE:
                 return '#696969';
+            case ObstacleType.FLYING_BIRD:
+                return '#8B4513';
+            case ObstacleType.FLYING_BAT:
+                return '#4B0082';
             default:
                 return '#000000';
         }
@@ -81,6 +110,12 @@ class Obstacle {
                 break;
             case ObstacleType.SPIKE:
                 this.drawSpike(ctx);
+                break;
+            case ObstacleType.FLYING_BIRD:
+                this.drawFlyingBird(ctx);
+                break;
+            case ObstacleType.FLYING_BAT:
+                this.drawFlyingBat(ctx);
                 break;
         }
 
@@ -194,6 +229,79 @@ class Obstacle {
         // ベース
         ctx.fillStyle = '#505050';
         ctx.fillRect(this.x, this.y + this.height, this.width, 5);
+    }
+
+    drawFlyingBird(ctx) {
+        ctx.fillStyle = this.color;
+
+        // 体（楕円）
+        ctx.beginPath();
+        ctx.ellipse(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, this.height / 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 翼（左）
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y + this.height / 2);
+        ctx.quadraticCurveTo(this.x - 10, this.y, this.x + 5, this.y + this.height / 3);
+        ctx.fill();
+
+        // 翼（右）
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width, this.y + this.height / 2);
+        ctx.quadraticCurveTo(this.x + this.width + 10, this.y, this.x + this.width - 5, this.y + this.height / 3);
+        ctx.fill();
+
+        // 目
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(this.x + this.width * 0.6, this.y + this.height * 0.4, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(this.x + this.width * 0.6, this.y + this.height * 0.4, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    drawFlyingBat(ctx) {
+        ctx.fillStyle = this.color;
+
+        // 体（楕円）
+        ctx.beginPath();
+        ctx.ellipse(this.x + this.width / 2, this.y + this.height / 2, this.width / 3, this.height / 2, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 翼（左・ギザギザ）
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width / 3, this.y + this.height / 2);
+        ctx.lineTo(this.x - 5, this.y + this.height / 4);
+        ctx.lineTo(this.x, this.y + this.height / 2);
+        ctx.lineTo(this.x - 5, this.y + this.height * 0.7);
+        ctx.lineTo(this.x + this.width / 3, this.y + this.height / 2);
+        ctx.fill();
+
+        // 翼（右・ギザギザ）
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width * 2/3, this.y + this.height / 2);
+        ctx.lineTo(this.x + this.width + 5, this.y + this.height / 4);
+        ctx.lineTo(this.x + this.width, this.y + this.height / 2);
+        ctx.lineTo(this.x + this.width + 5, this.y + this.height * 0.7);
+        ctx.lineTo(this.x + this.width * 2/3, this.y + this.height / 2);
+        ctx.fill();
+
+        // 耳
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width * 0.4, this.y + this.height * 0.2);
+        ctx.lineTo(this.x + this.width * 0.35, this.y);
+        ctx.lineTo(this.x + this.width * 0.45, this.y + this.height * 0.2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(this.x + this.width * 0.6, this.y + this.height * 0.2);
+        ctx.lineTo(this.x + this.width * 0.65, this.y);
+        ctx.lineTo(this.x + this.width * 0.55, this.y + this.height * 0.2);
+        ctx.fill();
     }
 
     // 当たり判定用のバウンディングボックスを取得
