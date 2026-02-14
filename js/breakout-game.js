@@ -50,7 +50,7 @@ class BreakoutGame {
         this.paddle = new Paddle(this.canvas.width / 2, this.canvas.height - 50, this);
         this.ball = new Ball(this.canvas.width / 2, this.canvas.height - 100, this);
         this.bricks = createBricks(this.canvas.width, this.brickRows, this.brickCols);
-        this.scoreManager = new ScoreManager();
+        this.scoreManager = new ScoreManager('breakout');
         this.audioManager = new AudioManager();
 
         // イベントリスナーの設定

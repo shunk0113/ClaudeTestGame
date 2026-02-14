@@ -1,8 +1,9 @@
 class ScoreManager {
-    constructor() {
+    constructor(gameId = 'default') {
         this.currentScore = 0;
         this.highScore = 0;
-        this.storageKey = 'endlessRunGameHighScore';
+        this.gameId = gameId;
+        this.storageKey = `${gameId}_highScore`;
     }
 
     // ポイントを追加

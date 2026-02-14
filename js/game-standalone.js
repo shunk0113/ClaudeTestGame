@@ -68,7 +68,7 @@ class Game {
     init() {
         // ゲーム要素の初期化
         this.player = new Player(100, this.canvas.height - 150, this);
-        this.scoreManager = new ScoreManager();
+        this.scoreManager = new ScoreManager('endlessRunner');
         this.audioManager = new AudioManager();
 
         // イベントリスナーの設定
